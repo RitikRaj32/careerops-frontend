@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }) => {
    * Send OTP to a phone number via the backend.
    */
   const sendOtp = async (phone) => {
-    const res = await fetch('http://localhost:5000/api/auth/send-otp', {
+    const res = await fetch('https://flims-app-backend.onrender.com/api/auth/send-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone })
@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const magicLogin = async (phone) => {
-    const res = await fetch('http://localhost:5000/api/auth/magic-login', {
+    const res = await fetch('https://flims-app-backend.onrender.com/api/auth/magic-login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone })
@@ -85,7 +85,7 @@ export const AuthProvider = ({ children }) => {
    * Returns { isNewUser: boolean } so the caller can navigate accordingly.
    */
   const verifyOtp = async (phone, otp) => {
-    const res = await fetch('http://localhost:5000/api/auth/verify-otp', {
+    const res = await fetch('https://flims-app-backend.onrender.com/api/auth/verify-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone, otp })
@@ -107,7 +107,7 @@ export const AuthProvider = ({ children }) => {
 
   const completeProfile = async (profileData) => {
     try {
-      await fetch('http://localhost:5000/api/users/profile', {
+      await fetch('https://flims-app-backend.onrender.com/api/users/profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone: user.phone, ...profileData })

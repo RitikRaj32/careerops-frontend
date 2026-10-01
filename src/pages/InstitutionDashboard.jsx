@@ -11,7 +11,7 @@ const InstitutionDashboard = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/institution/students');
+        const response = await fetch('https://flims-app-backend.onrender.com/api/institution/students');
         const data = await response.json();
         if (data.success) {
           setStudents(data.students || []);
@@ -28,7 +28,7 @@ const InstitutionDashboard = () => {
   const handleDeleteUser = async (id, name) => {
     if (!window.confirm(`Are you sure you want to permanently delete candidate ${name}?`)) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/institution/students/${id}`, {
+      const response = await fetch(`https://flims-app-backend.onrender.com/api/institution/students/${id}`, {
         method: 'DELETE'
       });
       const data = await response.json();
@@ -215,7 +215,7 @@ const InstitutionDashboard = () => {
                          <td className="p-4 text-right">
                             <div className="flex items-center justify-end gap-3">
                               {student.resumeUrl ? (
-                                <a href={`http://localhost:5000${student.resumeUrl}`} target="_blank" rel="noreferrer" className="text-blue hover:underline text-sm font-semibold flex items-center gap-1">
+                                <a href={`https://flims-app-backend.onrender.com${student.resumeUrl}`} target="_blank" rel="noreferrer" className="text-blue hover:underline text-sm font-semibold flex items-center gap-1">
                                    <FileText size={14} /> View
                                 </a>
                               ) : (
