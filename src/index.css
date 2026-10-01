@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-paper: 245 246 248;
+    --color-card: 255 255 255;
+    --color-ink: 20 24 31;
+    --color-ink-soft: 107 114 128;
+    --color-line: 231 233 238;
+    --color-blue-soft: 234 240 254;
+    --color-teal-soft: 228 246 241;
+    --color-rose-soft: 251 233 236;
+    --color-white: 255 255 255;
+  }
+
+  .dark {
+    --color-paper: 10 15 24;
+    --color-card: 18 26 40;
+    --color-ink: 245 246 248;
+    --color-ink-soft: 156 163 175;
+    --color-line: 31 41 55;
+    --color-blue-soft: 23 37 84;
+    --color-teal-soft: 6 78 59;
+    --color-rose-soft: 76 5 25;
+    --color-white: 255 255 255;
+  }
+
+  body {
+    @apply bg-paper text-ink font-sans transition-colors duration-300;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+}
+
+@layer utilities {
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+}
