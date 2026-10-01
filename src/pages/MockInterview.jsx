@@ -31,7 +31,7 @@ const MockInterview = () => {
     setIsAiTyping(true);
 
     try {
-      const res = await fetch('https://good-files-lead.loca.lt/api/interview/chat', {
+      const res = await fetch('http://localhost:5000/api/interview/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
