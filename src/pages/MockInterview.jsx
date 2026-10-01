@@ -31,7 +31,7 @@ const MockInterview = () => {
     setIsAiTyping(true);
 
     try {
-      const res = await fetch('http://localhost:5000/api/interview/chat', {
+      const res = await fetch('https://2e49c2b81cc2c9.lhr.life/api/interview/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

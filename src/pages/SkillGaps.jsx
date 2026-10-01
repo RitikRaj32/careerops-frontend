@@ -17,7 +17,7 @@ const SkillGaps = () => {
     const fetchRoadmap = async () => {
       setLoading(true);
       try {
-        const response = await fetch('http://localhost:5000/api/roadmap/analyze', {
+        const response = await fetch('https://2e49c2b81cc2c9.lhr.life/api/roadmap/analyze', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

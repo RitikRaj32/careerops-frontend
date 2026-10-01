@@ -70,7 +70,7 @@ const ResumeOptimization = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/resume/analyze', {
+      const response = await fetch('https://2e49c2b81cc2c9.lhr.life/api/resume/analyze', {
         method: 'POST',
         body: formData
       });

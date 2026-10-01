@@ -55,7 +55,7 @@ const InterviewPrep = () => {
   const handleGenerate = async () => {
     setIsGenerating(true);
     try {
-      const response = await fetch('http://localhost:5000/api/interview/prep', {
+      const response = await fetch('https://2e49c2b81cc2c9.lhr.life/api/interview/prep', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(prepData)
