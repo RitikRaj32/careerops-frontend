@@ -70,7 +70,7 @@ const ResumeOptimization = () => {
     }
 
     try {
-      const response = await fetch('https://flims-app-backend.onrender.com/api/resume/analyze', {
+      const response = await fetch('https://good-files-lead.loca.lt/api/resume/analyze', {
         method: 'POST',
         body: formData
       });

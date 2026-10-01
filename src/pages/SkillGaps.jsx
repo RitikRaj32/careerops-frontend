@@ -17,7 +17,7 @@ const SkillGaps = () => {
     const fetchRoadmap = async () => {
       setLoading(true);
       try {
-        const response = await fetch('https://flims-app-backend.onrender.com/api/roadmap/analyze', {
+        const response = await fetch('https://good-files-lead.loca.lt/api/roadmap/analyze', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

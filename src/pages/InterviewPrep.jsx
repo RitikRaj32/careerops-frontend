@@ -55,7 +55,7 @@ const InterviewPrep = () => {
   const handleGenerate = async () => {
     setIsGenerating(true);
     try {
-      const response = await fetch('https://flims-app-backend.onrender.com/api/interview/prep', {
+      const response = await fetch('https://good-files-lead.loca.lt/api/interview/prep', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(prepData)
