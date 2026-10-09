@@ -112,7 +112,12 @@ const MockInterview = () => {
         setMessages(prev => [...prev, { role: 'ai', content: data.reply }]);
         speakText(data.reply);
         if (data.feedback) {
-          setFeedbacks(prev => [{ text: data.feedback, timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }, ...prev]);
+          setFeedbacks(prev => [{ 
+            text: data.feedback, 
+            sampleAnswer: data.sampleAnswer,
+            missedPoints: data.missedPoints,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
+          }, ...prev]);
         }
       } else {
         setMessages(prev => [...prev, { role: 'system', content: 'Error: Failed to connect to AI (Check API Key).' }]);
@@ -320,7 +325,28 @@ const MockInterview = () => {
                         <Sparkles size={14} className="text-warning" />
                         <span className="text-xs font-bold text-muted-foreground">{fb.timestamp}</span>
                       </div>
-                      <p className="leading-relaxed">{fb.text}</p>
+                      <p className="leading-relaxed mb-2">
+                        <strong className="text-primary block mb-1">Feedback:</strong> 
+                        {fb.text}
+                      </p>
+                      
+                      {fb.sampleAnswer && (
+                        <div className="mt-3 pt-2 border-t border-border/50">
+                          <strong className="text-teal text-xs block mb-1">Ideal Answer Approach:</strong>
+                          <p className="text-xs text-muted-foreground italic leading-relaxed">{fb.sampleAnswer}</p>
+                        </div>
+                      )}
+                      
+                      {fb.missedPoints && fb.missedPoints.length > 0 && (
+                        <div className="mt-3 pt-2 border-t border-border/50">
+                          <strong className="text-rose-500 text-xs block mb-1">Missed Points:</strong>
+                          <ul className="list-disc pl-4 text-xs text-muted-foreground space-y-1">
+                            {fb.missedPoints.map((point, i) => (
+                              <li key={i}>{point}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                    </div>
                  ))
                )}
