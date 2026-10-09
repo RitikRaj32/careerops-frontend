@@ -8,22 +8,63 @@ export default {
   theme: {
     extend: {
       colors: {
+        background: 'var(--background)',
+        foreground: 'var(--foreground)',
+        card: {
+          DEFAULT: 'var(--card)',
+          foreground: 'var(--card-foreground)',
+        },
+        popover: {
+          DEFAULT: 'var(--popover)',
+          foreground: 'var(--popover-foreground)',
+        },
+        primary: {
+          DEFAULT: 'var(--primary)',
+          foreground: 'var(--primary-foreground)',
+        },
+        secondary: {
+          DEFAULT: 'var(--secondary)',
+          foreground: 'var(--secondary-foreground)',
+        },
+        muted: {
+          DEFAULT: 'var(--muted)',
+          foreground: 'var(--muted-foreground)',
+        },
+        accent: {
+          DEFAULT: 'var(--accent)',
+          foreground: 'var(--accent-foreground)',
+        },
+        destructive: {
+          DEFAULT: 'var(--destructive)',
+          foreground: 'var(--destructive-foreground)',
+        },
+        border: 'var(--border)',
+        input: 'var(--input)',
+        ring: 'var(--ring)',
+        warning: '#f59e0b',
+        sidebar: {
+          background: 'var(--sidebar-background)',
+          foreground: 'var(--sidebar-foreground)',
+          primary: 'var(--sidebar-primary)',
+          'primary-foreground': 'var(--sidebar-primary-foreground)',
+          accent: 'var(--sidebar-accent)',
+          'accent-foreground': 'var(--sidebar-accent-foreground)',
+          border: 'var(--sidebar-border)',
+          ring: 'var(--sidebar-ring)',
+        },
+        // Old colors just in case some were missed in the migration
         dark: '#0d1526',
         dark2: '#16223c',
         'dark-glow': '#1c3a63',
-        paper: 'rgb(var(--color-paper) / <alpha-value>)',
-        card: 'rgb(var(--color-card) / <alpha-value>)',
-        ink: 'rgb(var(--color-ink) / <alpha-value>)',
-        'ink-soft': 'rgb(var(--color-ink-soft) / <alpha-value>)',
-        line: 'rgb(var(--color-line) / <alpha-value>)',
-        white: 'rgb(var(--color-white) / <alpha-value>)',
         blue: '#2f6fed',
-        'blue-soft': 'rgb(var(--color-blue-soft) / <alpha-value>)',
         amber: '#f2ab34',
         teal: '#1f9e83',
-        'teal-soft': 'rgb(var(--color-teal-soft) / <alpha-value>)',
         rose: '#e0596a',
-        'rose-soft': 'rgb(var(--color-rose-soft) / <alpha-value>)',
+      },
+      borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
       },
       fontFamily: {
         display: ['Space Grotesk', 'sans-serif'],
@@ -49,5 +90,5 @@ export default {
       }
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")],
 }

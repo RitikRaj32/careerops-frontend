@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { useUser, useClerk, useAuth as useClerkAuth } from '@clerk/react';
 
 const AuthContext = createContext();
 
@@ -7,26 +8,100 @@ export const useAuth = () => useContext(AuthContext);
 const STORAGE_KEY = 'careerai_user';
 
 export const AuthProvider = ({ children }) => {
+  const { user: clerkUser, isLoaded, isSignedIn } = useUser();
+  const { signOut } = useClerk();
+  const { getToken } = useClerkAuth();
+  
   const [user, setUser] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed.isAuthenticated) return parsed;
+        return JSON.parse(saved);
       }
     } catch (e) {
       console.error('Failed to restore session', e);
     }
     return {
-      name: '',
-      phone: '',
-      targetRole: '',
       isAuthenticated: false,
-      isNewUser: false
+      isNewUser: false,
+      appliedJobs: []
     };
   });
 
-  // Persist user to localStorage whenever it changes
+  // Sync Clerk with Backend securely using JWT
+  useEffect(() => {
+    const syncUser = async () => {
+      // Prevent Clerk from overwriting an active Institution session
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed.role === 'INSTITUTION') return;
+        }
+      } catch (e) {}
+
+      console.log('--- syncUser started ---');
+      console.log('isLoaded:', isLoaded, 'isSignedIn:', isSignedIn, 'clerkUser:', !!clerkUser);
+      if (isLoaded && isSignedIn && clerkUser) {
+        let email = clerkUser.primaryEmailAddress?.emailAddress || 
+                    (clerkUser.emailAddresses && clerkUser.emailAddresses.length > 0 ? clerkUser.emailAddresses[0].emailAddress : null);
+        
+        // Fallback for phone-only users so they don't break the app
+        if (!email) {
+          const phone = clerkUser.primaryPhoneNumber?.phoneNumber || clerkUser.phoneNumbers?.[0]?.phoneNumber;
+          if (phone) {
+            email = `${phone}@phone-user.com`;
+          } else {
+            email = `${clerkUser.id}@clerk-user.com`;
+          }
+        }
+
+        console.log('Extracted email:', email);
+        if (!email) {
+          console.error('SYNC ABORTED: No email found on clerkUser!', clerkUser);
+          return;
+        }
+        
+        try {
+          const token = await getToken();
+          console.log('Got Clerk token:', !!token);
+          const res = await fetch('http://localhost:5000/api/auth/sync', {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              email,
+              firstName: clerkUser.firstName,
+              lastName: clerkUser.lastName,
+              imageUrl: clerkUser.imageUrl
+            })
+          });
+          const data = await res.json();
+          console.log("Sync response from backend:", data); // DEBUG LOG
+          
+          if (data.success) {
+            const dbUser = data.user;
+            console.log("Setting user context to:", dbUser); // DEBUG LOG
+            setUser(prev => ({
+              ...prev,
+              ...dbUser,
+              isAuthenticated: true,
+              isNewUser: !dbUser.isOnboarded
+            }));
+          }
+        } catch (err) {
+          console.error("Sync error:", err);
+        }
+      } else if (isLoaded && !isSignedIn) {
+        setUser({ isAuthenticated: false, isNewUser: false, appliedJobs: [] });
+      }
+    };
+    
+    syncUser();
+  }, [isLoaded, isSignedIn, clerkUser, getToken]);
+
   useEffect(() => {
     if (user.isAuthenticated) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
@@ -35,82 +110,16 @@ export const AuthProvider = ({ children }) => {
     }
   }, [user]);
 
-  /**
-   * Send OTP to a phone number via the backend.
-   */
-  const sendOtp = async (phone) => {
-    const res = await fetch('https://2e49c2b81cc2c9.lhr.life/api/auth/send-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone })
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Failed to send OTP');
-
-    if (data.skipOtp && data.user) {
-      setUser({
-        name: data.user.name || '',
-        phone: data.user.phone || phone,
-        isAuthenticated: true,
-        isNewUser: false,
-        ...data.user
-      });
-    }
-
-    return data;
-  };
-
-  const magicLogin = async (phone) => {
-    const res = await fetch('https://2e49c2b81cc2c9.lhr.life/api/auth/magic-login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone })
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Login failed');
-    
-    setUser({
-      name: data.user?.name || '',
-      phone: data.user?.phone || phone,
-      isAuthenticated: true,
-      isNewUser: !data.user?.isOnboarded,
-      ...data.user
-    });
-    
-    return data;
-  };
-
-  /**
-   * Verify OTP and log the user in.
-   * Returns { isNewUser: boolean } so the caller can navigate accordingly.
-   */
-  const verifyOtp = async (phone, otp) => {
-    const res = await fetch('https://2e49c2b81cc2c9.lhr.life/api/auth/verify-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone, otp })
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Verification failed');
-
-    const isNewUser = !data.user.isOnboarded;
-    const userData = {
-      name: data.user.name || '',
-      phone: data.user.phone || phone,
-      isAuthenticated: !isNewUser,
-      isNewUser,
-      ...data.user
-    };
-    setUser(userData);
-    return { isNewUser };
-  };
-
   const completeProfile = async (profileData) => {
     try {
-      await fetch('https://2e49c2b81cc2c9.lhr.life/api/users/profile', {
+      const token = await getToken();
+      await fetch('http://localhost:5000/api/users/profile', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: user.phone, ...profileData })
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ email: user.email, ...profileData })
       });
     } catch (error) {
       console.error('Failed to update profile via backend:', error);
@@ -127,7 +136,6 @@ export const AuthProvider = ({ children }) => {
   const applyJob = (job) => {
     setUser(prev => {
       const existing = prev.appliedJobs || [];
-      // Prevent duplicate applications
       if (existing.some(j => j.id === job.id)) return prev;
       return {
         ...prev,
@@ -146,15 +154,16 @@ export const AuthProvider = ({ children }) => {
     });
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await signOut();
     localStorage.removeItem(STORAGE_KEY);
-    setUser({ name: '', phone: '', targetRole: '', isAuthenticated: false, isNewUser: false, appliedJobs: [] });
+    setUser({ isAuthenticated: false, isNewUser: false, appliedJobs: [] });
   };
 
   const loginAsInstitution = (data) => {
     const institutionUser = {
       name: data?.name || 'Admin',
-      phone: data?.email || 'admin@institution.edu',
+      email: data?.email || 'admin@institution.edu',
       role: 'INSTITUTION',
       isAuthenticated: true,
       isNewUser: false
@@ -163,7 +172,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, sendOtp, verifyOtp, completeProfile, logout, magicLogin, applyJob, deleteApplication, loginAsInstitution }}>
+    <AuthContext.Provider value={{ user, completeProfile, logout, applyJob, deleteApplication, loginAsInstitution }}>
       {children}
     </AuthContext.Provider>
   );

@@ -68,9 +68,12 @@ const ResumeOptimization = () => {
     if (user && user.phone) {
       formData.append('phone', user.phone);
     }
+    if (user && user.email) {
+      formData.append('email', user.email);
+    }
 
     try {
-      const response = await fetch('https://2e49c2b81cc2c9.lhr.life/api/resume/analyze', {
+      const response = await fetch('http://localhost:5000/api/resume/analyze', {
         method: 'POST',
         body: formData
       });
@@ -79,7 +82,7 @@ const ResumeOptimization = () => {
         setAnalyzedData(data);
         setAnalyzed(true);
         // Dispatch event or update auth context if needed to update score globally
-        const updatedUser = { ...user, resumeScore: data.score };
+        const updatedUser = { ...user, resumeScore: data.score, resumeUrl: data.resumeUrl || user.resumeUrl };
         localStorage.setItem('careerai_user', JSON.stringify(updatedUser));
         window.dispatchEvent(new Event('storage')); // trigger auth update if listening
       } else {
@@ -135,18 +138,18 @@ const ResumeOptimization = () => {
       
       <div className="print:hidden">
         <div className="mb-8">
-          <h2 className="text-3xl font-display font-bold text-ink flex items-center gap-3">
-            <FileText className="text-blue" size={32} />
+          <h2 className="text-3xl font-display font-bold text-foreground flex items-center gap-3">
+            <FileText className="text-primary" size={32} />
             Resume Hub
           </h2>
-          <p className="text-ink-soft mt-2 text-lg">Analyze your existing resume or build a brand new ATS-friendly one.</p>
+          <p className="text-muted-foreground mt-2 text-lg">Analyze your existing resume or build a brand new ATS-friendly one.</p>
         </div>
 
-        <div className="flex gap-4 mb-8 border-b border-line pb-4">
-          <button onClick={() => setActiveTab('analyzer')} className={`font-bold pb-2 border-b-2 transition-all ${activeTab === 'analyzer' ? 'border-blue text-blue' : 'border-transparent text-ink-soft hover:text-ink'}`}>
+        <div className="flex gap-4 mb-8 border-b border-border pb-4">
+          <button onClick={() => setActiveTab('analyzer')} className={`font-bold pb-2 border-b-2 transition-all ${activeTab === 'analyzer' ? 'border-blue text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>
             <Sparkles size={18} className="inline mr-2 -mt-1"/> AI Analyzer
           </button>
-          <button onClick={() => setActiveTab('builder')} className={`font-bold pb-2 border-b-2 transition-all ${activeTab === 'builder' ? 'border-blue text-blue' : 'border-transparent text-ink-soft hover:text-ink'}`}>
+          <button onClick={() => setActiveTab('builder')} className={`font-bold pb-2 border-b-2 transition-all ${activeTab === 'builder' ? 'border-blue text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>
             <PenTool size={18} className="inline mr-2 -mt-1"/> Template Builder
           </button>
         </div>
@@ -155,14 +158,14 @@ const ResumeOptimization = () => {
       {activeTab === 'analyzer' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 print:hidden">
           <div className="lg:col-span-1 space-y-6">
-            <div className="bg-card/80 dark:bg-card/40 backdrop-blur-xl border border-line rounded-2xl shadow-glass p-6 text-center relative overflow-hidden group">
+            <div className="bg-card/80 dark:bg-card/40 backdrop-blur-xl border border-border rounded-2xl shadow-glass p-6 text-center relative overflow-hidden group">
                {!analyzed ? (
                   <>
-                    <div className="w-16 h-16 bg-blue-soft text-blue rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform"><UploadCloud size={32} /></div>
+                    <div className="w-16 h-16 bg-primary-soft text-primary rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform"><UploadCloud size={32} /></div>
                     <h3 className="font-bold text-lg mb-2">Upload Resume</h3>
-                    <p className="text-sm text-ink-soft mb-6">PDF only</p>
+                    <p className="text-sm text-muted-foreground mb-6">PDF only</p>
                     <input type="file" id="resume-upload" className="hidden" accept=".pdf" onChange={handleFileUpload} />
-                    <label htmlFor="resume-upload" className="w-full block py-3 bg-blue hover:bg-blue-600 text-white font-bold rounded-xl transition-all cursor-pointer shadow-md">{isUploading ? 'Analyzing AI...' : 'Browse Files'}</label>
+                    <label htmlFor="resume-upload" className="w-full block py-3 bg-primary hover:bg-primary-600 text-white font-bold rounded-xl transition-all cursor-pointer shadow-md">{isUploading ? 'Analyzing AI...' : 'Browse Files'}</label>
                   </>
                ) : (
                   <>
@@ -172,34 +175,34 @@ const ResumeOptimization = () => {
                           <circle cx="48" cy="48" r="40" stroke="currentColor" strokeWidth="8" fill="transparent" className="text-line" />
                           <circle cx="48" cy="48" r="40" stroke="currentColor" strokeWidth="8" fill="transparent" strokeDasharray="251.2" strokeDashoffset={251.2 - (251.2 * (analyzedData?.score || 0)) / 100} className="text-emerald-500 transition-all duration-1000 ease-out" />
                        </svg>
-                       <div className="absolute inset-0 flex flex-col items-center justify-center"><span className="text-2xl font-bold text-ink">{analyzedData?.score || 0}%</span></div>
+                       <div className="absolute inset-0 flex flex-col items-center justify-center"><span className="text-2xl font-bold text-foreground">{analyzedData?.score || 0}%</span></div>
                     </div>
                     <h3 className="font-bold text-lg mb-1">ATS Match Score</h3>
-                    <button onClick={() => { setFile(null); setAnalyzed(false); }} className="text-sm text-blue font-bold hover:underline mt-4">Upload a different file</button>
+                    <button onClick={() => { setFile(null); setAnalyzed(false); }} className="text-sm text-primary font-bold hover:underline mt-4">Upload a different file</button>
                   </>
                )}
             </div>
 
             {analyzed && (
-               <div className="bg-card/80 dark:bg-card/40 backdrop-blur-xl border border-line rounded-2xl shadow-glass p-6">
-                  <h3 className="font-bold text-lg mb-4 flex items-center gap-2"><BarChart size={18} className="text-blue" /> Key Metrics</h3>
+               <div className="bg-card/80 dark:bg-card/40 backdrop-blur-xl border border-border rounded-2xl shadow-glass p-6">
+                  <h3 className="font-bold text-lg mb-4 flex items-center gap-2"><BarChart size={18} className="text-primary" /> Key Metrics</h3>
                   <div className="space-y-4">
-                     <div className="flex justify-between items-center"><span className="text-sm text-ink-soft flex items-center gap-2"><CheckCircle2 size={16} className="text-emerald-500"/> Word Count</span><span className="font-bold text-sm">{analyzedData?.wordCount || 0} words</span></div>
-                     <div className="flex justify-between items-center"><span className="text-sm text-ink-soft flex items-center gap-2"><AlertCircle size={16} className="text-amber"/> Action Verbs</span><span className="font-bold text-sm">{analyzedData?.actionVerbs || 'Needs Work'}</span></div>
-                     <div className="flex justify-between items-center"><span className="text-sm text-ink-soft flex items-center gap-2"><CheckCircle2 size={16} className="text-emerald-500"/> Measurable Results</span><span className="font-bold text-sm">{analyzedData?.measurableResults || 'Needs Work'}</span></div>
+                     <div className="flex justify-between items-center"><span className="text-sm text-muted-foreground flex items-center gap-2"><CheckCircle2 size={16} className="text-emerald-500"/> Word Count</span><span className="font-bold text-sm">{analyzedData?.wordCount || 0} words</span></div>
+                     <div className="flex justify-between items-center"><span className="text-sm text-muted-foreground flex items-center gap-2"><AlertCircle size={16} className="text-warning"/> Action Verbs</span><span className="font-bold text-sm">{analyzedData?.actionVerbs || 'Needs Work'}</span></div>
+                     <div className="flex justify-between items-center"><span className="text-sm text-muted-foreground flex items-center gap-2"><CheckCircle2 size={16} className="text-emerald-500"/> Measurable Results</span><span className="font-bold text-sm">{analyzedData?.measurableResults || 'Needs Work'}</span></div>
                   </div>
                </div>
             )}
           </div>
 
           <div className="lg:col-span-2 space-y-6">
-             <div className="bg-card/80 dark:bg-card/40 backdrop-blur-xl border border-line rounded-2xl shadow-glass p-6">
-                <div className="flex items-center gap-3 mb-6 border-b border-line pb-4">
+             <div className="bg-card/80 dark:bg-card/40 backdrop-blur-xl border border-border rounded-2xl shadow-glass p-6">
+                <div className="flex items-center gap-3 mb-6 border-b border-border pb-4">
                    <div className="p-2 bg-purple-100 rounded-lg text-purple-600"><Sparkles size={20} /></div>
                    <h3 className="font-bold text-xl">AI Strategic Recommendations</h3>
                 </div>
                 {!analyzed ? (
-                   <div className="text-center py-12 text-ink-soft">
+                   <div className="text-center py-12 text-muted-foreground">
                       <FileCheck size={48} className="mx-auto mb-4 text-line" />
                       <p>Upload your resume to see AI-powered recommendations on how to make it better.</p>
                    </div>
@@ -211,7 +214,7 @@ const ResumeOptimization = () => {
                            <div className="flex items-center gap-2 mb-2">
                               <span className="px-2 py-1 bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 text-xs font-bold rounded uppercase tracking-wide">{rec.category}</span>
                            </div>
-                           <p className="text-ink font-medium leading-relaxed">{rec.advice}</p>
+                           <p className="text-foreground font-medium leading-relaxed">{rec.advice}</p>
                         </div>
                       ))}
                    </div>
@@ -222,17 +225,17 @@ const ResumeOptimization = () => {
              {analyzed && analyzedData?.errors && analyzedData.errors.length > 0 && (
                 <div className="bg-card/80 dark:bg-card/40 backdrop-blur-xl border border-rose/30 rounded-2xl shadow-glass p-6 animate-in slide-in-from-bottom-4">
                    <div className="flex items-center gap-3 mb-6 border-b border-rose/10 pb-4">
-                      <div className="p-2 bg-rose/10 rounded-lg text-rose"><AlertCircle size={20} /></div>
-                      <h3 className="font-bold text-xl text-rose">Real-Time Error Checks</h3>
+                      <div className="p-2 bg-destructive/10 rounded-lg text-destructive"><AlertCircle size={20} /></div>
+                      <h3 className="font-bold text-xl text-destructive">Real-Time Error Checks</h3>
                    </div>
                    <div className="space-y-4">
                       {analyzedData.errors.map((error, idx) => (
                          <div key={idx} className="p-4 bg-rose/5 rounded-xl border border-rose/10">
                             <div className="flex items-center gap-2 mb-2">
-                               <span className="px-2 py-1 bg-rose/10 text-rose text-xs font-bold rounded uppercase tracking-wide">{error.type}</span>
-                               <span className="text-ink-soft text-sm font-medium line-through">"{error.context}"</span>
+                               <span className="px-2 py-1 bg-destructive/10 text-destructive text-xs font-bold rounded uppercase tracking-wide">{error.type}</span>
+                               <span className="text-muted-foreground text-sm font-medium line-through">"{error.context}"</span>
                             </div>
-                            <p className="text-ink font-bold flex items-start gap-2">
+                            <p className="text-foreground font-bold flex items-start gap-2">
                                <span className="text-emerald-500 mt-1"><CheckCircle2 size={16} /></span>
                                {error.suggestion}
                             </p>
@@ -249,8 +252,8 @@ const ResumeOptimization = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:h-[850px]">
           
           {/* Builder Editor Menu */}
-          <div className="bg-card/80 dark:bg-card/40 backdrop-blur-xl border border-line rounded-2xl shadow-glass overflow-hidden flex flex-col print:hidden">
-            <div className="p-6 border-b border-line flex justify-between items-center bg-card/80 dark:bg-card/40 sticky top-0 z-10">
+          <div className="bg-card/80 dark:bg-card/40 backdrop-blur-xl border border-border rounded-2xl shadow-glass overflow-hidden flex flex-col print:hidden">
+            <div className="p-6 border-b border-border flex justify-between items-center bg-card/80 dark:bg-card/40 sticky top-0 z-10">
               <h3 className="font-bold text-xl">Resume Details</h3>
               <button onClick={handlePrint} className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg flex items-center gap-2 shadow-sm transition-colors text-sm">
                 <Download size={16} /> Download PDF
@@ -260,67 +263,67 @@ const ResumeOptimization = () => {
             <div className="overflow-y-auto p-4 space-y-4">
               
               {/* Personal Info Section */}
-              <div className="bg-card/80 dark:bg-card/40 rounded-xl border border-line overflow-hidden">
+              <div className="bg-card/80 dark:bg-card/40 rounded-xl border border-border overflow-hidden">
                 <button onClick={() => toggleSection('personal')} className="w-full p-4 flex justify-between items-center font-bold hover:bg-card/80 dark:bg-card/40 transition-colors">
                   Personal Information {openSection === 'personal' ? <ChevronUp size={20}/> : <ChevronDown size={20}/>}
                 </button>
                 {openSection === 'personal' && (
-                  <div className="p-4 border-t border-line space-y-4">
-                    <input type="text" placeholder="Full Name" className="w-full p-2 border border-line rounded-lg bg-transparent text-ink focus:border-blue focus:outline-none" value={resumeData.name} onChange={e => setResumeData({...resumeData, name: e.target.value})} />
+                  <div className="p-4 border-t border-border space-y-4">
+                    <input type="text" placeholder="Full Name" className="w-full p-2 border border-border rounded-lg bg-transparent text-foreground focus:border-blue focus:outline-none" value={resumeData.name} onChange={e => setResumeData({...resumeData, name: e.target.value})} />
                     <div className="grid grid-cols-2 gap-4">
-                      <input type="email" placeholder="Email" className="w-full p-2 border border-line rounded-lg bg-transparent text-ink focus:border-blue focus:outline-none" value={resumeData.email} onChange={e => setResumeData({...resumeData, email: e.target.value})} />
-                      <input type="text" placeholder="Phone" className="w-full p-2 border border-line rounded-lg bg-transparent text-ink focus:border-blue focus:outline-none" value={resumeData.phone} onChange={e => setResumeData({...resumeData, phone: e.target.value})} />
+                      <input type="email" placeholder="Email" className="w-full p-2 border border-border rounded-lg bg-transparent text-foreground focus:border-blue focus:outline-none" value={resumeData.email} onChange={e => setResumeData({...resumeData, email: e.target.value})} />
+                      <input type="text" placeholder="Phone" className="w-full p-2 border border-border rounded-lg bg-transparent text-foreground focus:border-blue focus:outline-none" value={resumeData.phone} onChange={e => setResumeData({...resumeData, phone: e.target.value})} />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                      <input type="text" placeholder="LinkedIn URL" className="w-full p-2 border border-line rounded-lg bg-transparent text-ink focus:border-blue focus:outline-none" value={resumeData.linkedin} onChange={e => setResumeData({...resumeData, linkedin: e.target.value})} />
-                      <input type="text" placeholder="GitHub URL" className="w-full p-2 border border-line rounded-lg bg-transparent text-ink focus:border-blue focus:outline-none" value={resumeData.github} onChange={e => setResumeData({...resumeData, github: e.target.value})} />
+                      <input type="text" placeholder="LinkedIn URL" className="w-full p-2 border border-border rounded-lg bg-transparent text-foreground focus:border-blue focus:outline-none" value={resumeData.linkedin} onChange={e => setResumeData({...resumeData, linkedin: e.target.value})} />
+                      <input type="text" placeholder="GitHub URL" className="w-full p-2 border border-border rounded-lg bg-transparent text-foreground focus:border-blue focus:outline-none" value={resumeData.github} onChange={e => setResumeData({...resumeData, github: e.target.value})} />
                     </div>
                   </div>
                 )}
               </div>
 
               {/* Summary & Skills Section */}
-              <div className="bg-card/80 dark:bg-card/40 rounded-xl border border-line overflow-hidden">
+              <div className="bg-card/80 dark:bg-card/40 rounded-xl border border-border overflow-hidden">
                 <button onClick={() => toggleSection('summary')} className="w-full p-4 flex justify-between items-center font-bold hover:bg-card/80 dark:bg-card/40 transition-colors">
                   Summary & Skills {openSection === 'summary' ? <ChevronUp size={20}/> : <ChevronDown size={20}/>}
                 </button>
                 {openSection === 'summary' && (
-                  <div className="p-4 border-t border-line space-y-4">
+                  <div className="p-4 border-t border-border space-y-4">
                     <div>
-                      <label className="block text-xs font-bold text-ink-soft mb-1 uppercase tracking-wider">Professional Summary</label>
-                      <textarea className="w-full p-2 border border-line rounded-lg bg-transparent text-ink focus:border-blue focus:outline-none h-24" value={resumeData.summary} onChange={e => setResumeData({...resumeData, summary: e.target.value})} />
+                      <label className="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wider">Professional Summary</label>
+                      <textarea className="w-full p-2 border border-border rounded-lg bg-transparent text-foreground focus:border-blue focus:outline-none h-24" value={resumeData.summary} onChange={e => setResumeData({...resumeData, summary: e.target.value})} />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-ink-soft mb-1 uppercase tracking-wider">Top Skills (Comma Separated)</label>
-                      <input type="text" className="w-full p-2 border border-line rounded-lg bg-transparent text-ink focus:border-blue focus:outline-none" value={resumeData.skills} onChange={e => setResumeData({...resumeData, skills: e.target.value})} />
+                      <label className="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wider">Top Skills (Comma Separated)</label>
+                      <input type="text" className="w-full p-2 border border-border rounded-lg bg-transparent text-foreground focus:border-blue focus:outline-none" value={resumeData.skills} onChange={e => setResumeData({...resumeData, skills: e.target.value})} />
                     </div>
                   </div>
                 )}
               </div>
 
               {/* Experience Section */}
-              <div className="bg-card/80 dark:bg-card/40 rounded-xl border border-line overflow-hidden">
+              <div className="bg-card/80 dark:bg-card/40 rounded-xl border border-border overflow-hidden">
                 <button onClick={() => toggleSection('experience')} className="w-full p-4 flex justify-between items-center font-bold hover:bg-card/80 dark:bg-card/40 transition-colors">
                   Work Experience {openSection === 'experience' ? <ChevronUp size={20}/> : <ChevronDown size={20}/>}
                 </button>
                 {openSection === 'experience' && (
-                  <div className="p-4 border-t border-line space-y-6">
+                  <div className="p-4 border-t border-border space-y-6">
                     {resumeData.experience.map((exp, idx) => (
-                      <div key={exp.id} className="relative p-4 border border-line rounded-lg bg-card/80 dark:bg-card/40">
+                      <div key={exp.id} className="relative p-4 border border-border rounded-lg bg-card/80 dark:bg-card/40">
                         <button onClick={() => removeExperience(exp.id)} className="absolute top-3 right-3 text-red-400 hover:text-red-600"><Trash2 size={16}/></button>
                         <h4 className="font-bold text-sm mb-3">Experience {idx + 1}</h4>
                         <div className="grid grid-cols-2 gap-3 mb-3">
-                          <input type="text" placeholder="Role / Job Title" className="w-full p-2 border border-line rounded-lg bg-transparent text-ink focus:border-blue focus:outline-none text-sm" value={exp.role} onChange={e => updateExperience(exp.id, 'role', e.target.value)} />
-                          <input type="text" placeholder="Company Name" className="w-full p-2 border border-line rounded-lg bg-transparent text-ink focus:border-blue focus:outline-none text-sm" value={exp.company} onChange={e => updateExperience(exp.id, 'company', e.target.value)} />
+                          <input type="text" placeholder="Role / Job Title" className="w-full p-2 border border-border rounded-lg bg-transparent text-foreground focus:border-blue focus:outline-none text-sm" value={exp.role} onChange={e => updateExperience(exp.id, 'role', e.target.value)} />
+                          <input type="text" placeholder="Company Name" className="w-full p-2 border border-border rounded-lg bg-transparent text-foreground focus:border-blue focus:outline-none text-sm" value={exp.company} onChange={e => updateExperience(exp.id, 'company', e.target.value)} />
                         </div>
                         <div className="grid grid-cols-2 gap-3 mb-3">
-                          <input type="text" placeholder="Dates (e.g. Jan 2022 - Present)" className="w-full p-2 border border-line rounded-lg bg-transparent text-ink focus:border-blue focus:outline-none text-sm" value={exp.date} onChange={e => updateExperience(exp.id, 'date', e.target.value)} />
-                          <input type="text" placeholder="Location (e.g. Remote, NY)" className="w-full p-2 border border-line rounded-lg bg-transparent text-ink focus:border-blue focus:outline-none text-sm" value={exp.location} onChange={e => updateExperience(exp.id, 'location', e.target.value)} />
+                          <input type="text" placeholder="Dates (e.g. Jan 2022 - Present)" className="w-full p-2 border border-border rounded-lg bg-transparent text-foreground focus:border-blue focus:outline-none text-sm" value={exp.date} onChange={e => updateExperience(exp.id, 'date', e.target.value)} />
+                          <input type="text" placeholder="Location (e.g. Remote, NY)" className="w-full p-2 border border-border rounded-lg bg-transparent text-foreground focus:border-blue focus:outline-none text-sm" value={exp.location} onChange={e => updateExperience(exp.id, 'location', e.target.value)} />
                         </div>
-                        <textarea placeholder="Bullet points (Enter one per line)" className="w-full p-2 border border-line rounded-lg bg-transparent text-ink focus:border-blue focus:outline-none text-sm h-24" value={exp.bullets} onChange={e => updateExperience(exp.id, 'bullets', e.target.value)} />
+                        <textarea placeholder="Bullet points (Enter one per line)" className="w-full p-2 border border-border rounded-lg bg-transparent text-foreground focus:border-blue focus:outline-none text-sm h-24" value={exp.bullets} onChange={e => updateExperience(exp.id, 'bullets', e.target.value)} />
                       </div>
                     ))}
-                    <button onClick={addExperience} className="w-full py-2 border-2 border-dashed border-blue text-blue font-bold rounded-lg hover:bg-blue-50 transition-colors flex items-center justify-center gap-2">
+                    <button onClick={addExperience} className="w-full py-2 border-2 border-dashed border-blue text-primary font-bold rounded-lg hover:bg-primary-50 transition-colors flex items-center justify-center gap-2">
                       <Plus size={18}/> Add Experience
                     </button>
                   </div>
@@ -328,25 +331,25 @@ const ResumeOptimization = () => {
               </div>
 
               {/* Projects Section */}
-              <div className="bg-card/80 dark:bg-card/40 rounded-xl border border-line overflow-hidden">
+              <div className="bg-card/80 dark:bg-card/40 rounded-xl border border-border overflow-hidden">
                 <button onClick={() => toggleSection('projects')} className="w-full p-4 flex justify-between items-center font-bold hover:bg-card/80 dark:bg-card/40 transition-colors">
                   Projects {openSection === 'projects' ? <ChevronUp size={20}/> : <ChevronDown size={20}/>}
                 </button>
                 {openSection === 'projects' && (
-                  <div className="p-4 border-t border-line space-y-6">
+                  <div className="p-4 border-t border-border space-y-6">
                     {resumeData.projects.map((proj, idx) => (
-                      <div key={proj.id} className="relative p-4 border border-line rounded-lg bg-card/80 dark:bg-card/40">
+                      <div key={proj.id} className="relative p-4 border border-border rounded-lg bg-card/80 dark:bg-card/40">
                         <button onClick={() => removeProject(proj.id)} className="absolute top-3 right-3 text-red-400 hover:text-red-600"><Trash2 size={16}/></button>
                         <h4 className="font-bold text-sm mb-3">Project {idx + 1}</h4>
                         <div className="grid grid-cols-2 gap-3 mb-3">
-                          <input type="text" placeholder="Project Title" className="w-full p-2 border border-line rounded-lg bg-transparent text-ink focus:border-blue focus:outline-none text-sm" value={proj.title} onChange={e => updateProject(proj.id, 'title', e.target.value)} />
-                          <input type="text" placeholder="Technologies Used" className="w-full p-2 border border-line rounded-lg bg-transparent text-ink focus:border-blue focus:outline-none text-sm" value={proj.tech} onChange={e => updateProject(proj.id, 'tech', e.target.value)} />
+                          <input type="text" placeholder="Project Title" className="w-full p-2 border border-border rounded-lg bg-transparent text-foreground focus:border-blue focus:outline-none text-sm" value={proj.title} onChange={e => updateProject(proj.id, 'title', e.target.value)} />
+                          <input type="text" placeholder="Technologies Used" className="w-full p-2 border border-border rounded-lg bg-transparent text-foreground focus:border-blue focus:outline-none text-sm" value={proj.tech} onChange={e => updateProject(proj.id, 'tech', e.target.value)} />
                         </div>
-                        <input type="text" placeholder="Date / Year" className="w-full p-2 border border-line rounded-lg bg-transparent text-ink focus:border-blue focus:outline-none text-sm mb-3" value={proj.date} onChange={e => updateProject(proj.id, 'date', e.target.value)} />
-                        <textarea placeholder="Bullet points (Enter one per line)" className="w-full p-2 border border-line rounded-lg bg-transparent text-ink focus:border-blue focus:outline-none text-sm h-24" value={proj.bullets} onChange={e => updateProject(proj.id, 'bullets', e.target.value)} />
+                        <input type="text" placeholder="Date / Year" className="w-full p-2 border border-border rounded-lg bg-transparent text-foreground focus:border-blue focus:outline-none text-sm mb-3" value={proj.date} onChange={e => updateProject(proj.id, 'date', e.target.value)} />
+                        <textarea placeholder="Bullet points (Enter one per line)" className="w-full p-2 border border-border rounded-lg bg-transparent text-foreground focus:border-blue focus:outline-none text-sm h-24" value={proj.bullets} onChange={e => updateProject(proj.id, 'bullets', e.target.value)} />
                       </div>
                     ))}
-                    <button onClick={addProject} className="w-full py-2 border-2 border-dashed border-blue text-blue font-bold rounded-lg hover:bg-blue-50 transition-colors flex items-center justify-center gap-2">
+                    <button onClick={addProject} className="w-full py-2 border-2 border-dashed border-blue text-primary font-bold rounded-lg hover:bg-primary-50 transition-colors flex items-center justify-center gap-2">
                       <Plus size={18}/> Add Project
                     </button>
                   </div>
@@ -354,27 +357,27 @@ const ResumeOptimization = () => {
               </div>
 
               {/* Education Section */}
-              <div className="bg-card/80 dark:bg-card/40 rounded-xl border border-line overflow-hidden">
+              <div className="bg-card/80 dark:bg-card/40 rounded-xl border border-border overflow-hidden">
                 <button onClick={() => toggleSection('education')} className="w-full p-4 flex justify-between items-center font-bold hover:bg-card/80 dark:bg-card/40 transition-colors">
                   Education {openSection === 'education' ? <ChevronUp size={20}/> : <ChevronDown size={20}/>}
                 </button>
                 {openSection === 'education' && (
-                  <div className="p-4 border-t border-line space-y-6">
+                  <div className="p-4 border-t border-border space-y-6">
                     {resumeData.education.map((edu, idx) => (
-                      <div key={edu.id} className="relative p-4 border border-line rounded-lg bg-card/80 dark:bg-card/40">
+                      <div key={edu.id} className="relative p-4 border border-border rounded-lg bg-card/80 dark:bg-card/40">
                         <button onClick={() => removeEducation(edu.id)} className="absolute top-3 right-3 text-red-400 hover:text-red-600"><Trash2 size={16}/></button>
                         <h4 className="font-bold text-sm mb-3">Education {idx + 1}</h4>
                         <div className="grid grid-cols-2 gap-3 mb-3">
-                          <input type="text" placeholder="Degree / Major" className="w-full p-2 border border-line rounded-lg bg-transparent text-ink focus:border-blue focus:outline-none text-sm" value={edu.degree} onChange={e => updateEducation(edu.id, 'degree', e.target.value)} />
-                          <input type="text" placeholder="Institution Name" className="w-full p-2 border border-line rounded-lg bg-transparent text-ink focus:border-blue focus:outline-none text-sm" value={edu.institution} onChange={e => updateEducation(edu.id, 'institution', e.target.value)} />
+                          <input type="text" placeholder="Degree / Major" className="w-full p-2 border border-border rounded-lg bg-transparent text-foreground focus:border-blue focus:outline-none text-sm" value={edu.degree} onChange={e => updateEducation(edu.id, 'degree', e.target.value)} />
+                          <input type="text" placeholder="Institution Name" className="w-full p-2 border border-border rounded-lg bg-transparent text-foreground focus:border-blue focus:outline-none text-sm" value={edu.institution} onChange={e => updateEducation(edu.id, 'institution', e.target.value)} />
                         </div>
                         <div className="grid grid-cols-2 gap-3">
-                          <input type="text" placeholder="Dates (e.g. 2019 - 2023)" className="w-full p-2 border border-line rounded-lg bg-transparent text-ink focus:border-blue focus:outline-none text-sm" value={edu.date} onChange={e => updateEducation(edu.id, 'date', e.target.value)} />
-                          <input type="text" placeholder="Location" className="w-full p-2 border border-line rounded-lg bg-transparent text-ink focus:border-blue focus:outline-none text-sm" value={edu.location} onChange={e => updateEducation(edu.id, 'location', e.target.value)} />
+                          <input type="text" placeholder="Dates (e.g. 2019 - 2023)" className="w-full p-2 border border-border rounded-lg bg-transparent text-foreground focus:border-blue focus:outline-none text-sm" value={edu.date} onChange={e => updateEducation(edu.id, 'date', e.target.value)} />
+                          <input type="text" placeholder="Location" className="w-full p-2 border border-border rounded-lg bg-transparent text-foreground focus:border-blue focus:outline-none text-sm" value={edu.location} onChange={e => updateEducation(edu.id, 'location', e.target.value)} />
                         </div>
                       </div>
                     ))}
-                    <button onClick={addEducation} className="w-full py-2 border-2 border-dashed border-blue text-blue font-bold rounded-lg hover:bg-blue-50 transition-colors flex items-center justify-center gap-2">
+                    <button onClick={addEducation} className="w-full py-2 border-2 border-dashed border-blue text-primary font-bold rounded-lg hover:bg-primary-50 transition-colors flex items-center justify-center gap-2">
                       <Plus size={18}/> Add Education
                     </button>
                   </div>
@@ -385,7 +388,7 @@ const ResumeOptimization = () => {
           </div>
 
           {/* Live ATS Preview */}
-          <div className="bg-white border border-line shadow-lg overflow-y-auto print:overflow-visible print:border-none print:shadow-none resume-preview">
+          <div className="bg-white border border-border shadow-lg overflow-y-auto print:overflow-visible print:border-none print:shadow-none resume-preview">
              <div className="p-8 font-serif text-black min-h-full text-[13px] leading-relaxed">
                 
                 {/* Header */}

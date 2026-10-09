@@ -43,7 +43,7 @@ const InstitutionLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-dark font-sans relative overflow-hidden flex items-center justify-center p-6">
+    <div className="min-h-screen bg-[#0d1526] font-sans relative overflow-hidden flex items-center justify-center p-6">
       {/* Background Logo */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.03] mix-blend-overlay pointer-events-none scale-150"
@@ -51,15 +51,15 @@ const InstitutionLogin = () => {
       ></div>
 
       {/* Animated Liquid Background Blobs */}
-      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-teal/20 blur-[100px] animate-blob pointer-events-none"></div>
-      <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[500px] rounded-full bg-blue/20 blur-[120px] animate-blob animation-delay-2000 pointer-events-none"></div>
+      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-primary/20 blur-[100px] animate-blob pointer-events-none"></div>
+      <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[500px] rounded-full bg-primary/20 blur-[120px] animate-blob animation-delay-2000 pointer-events-none"></div>
 
       <div className="relative z-10 w-full max-w-md animate-in slide-in-from-bottom-12 duration-700">
         <div className="bg-card/10 backdrop-blur-2xl border border-white/10 rounded-3xl p-8 md:p-10 shadow-2xl text-white relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-teal/20 rounded-full -mr-16 -mt-16 pointer-events-none"></div>
+          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full -mr-16 -mt-16 pointer-events-none"></div>
           
           <div className="flex flex-col items-center mb-10 relative z-10">
-            <div className="w-16 h-16 rounded-2xl bg-teal flex items-center justify-center shadow-lg mb-6">
+            <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center shadow-lg mb-6">
               <Building2 size={32} className="text-white" />
             </div>
             <h2 className="text-3xl font-display font-bold text-center">Institution Access</h2>
@@ -67,7 +67,7 @@ const InstitutionLogin = () => {
           </div>
           
           {error && (
-            <div className="mb-6 p-4 rounded-xl bg-rose/20 border border-rose/50 text-rose-light text-sm font-semibold text-center relative z-10">
+            <div className="mb-6 p-4 rounded-xl bg-rose/20 border border-rose/50 text-destructive-light text-sm font-semibold text-center relative z-10">
               {error}
             </div>
           )}
@@ -85,7 +85,7 @@ const InstitutionLogin = () => {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full bg-dark/50 border border-white/10 rounded-xl py-3.5 pl-11 pr-4 text-white placeholder-white/30 focus:outline-none focus:border-teal focus:ring-1 focus:ring-teal transition-all shadow-inner"
+                  className="w-full bg-black/30 border border-white/10 rounded-xl py-3.5 pl-11 pr-4 text-white placeholder-white/30 focus:outline-none focus:border-teal focus:ring-1 focus:ring-teal transition-all shadow-inner"
                   placeholder="admin@university.edu"
                 />
               </div>
@@ -103,7 +103,7 @@ const InstitutionLogin = () => {
                   required
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full bg-dark/50 border border-white/10 rounded-xl py-3.5 pl-11 pr-4 text-white placeholder-white/30 focus:outline-none focus:border-teal focus:ring-1 focus:ring-teal transition-all shadow-inner"
+                  className="w-full bg-black/30 border border-white/10 rounded-xl py-3.5 pl-11 pr-4 text-white placeholder-white/30 focus:outline-none focus:border-teal focus:ring-1 focus:ring-teal transition-all shadow-inner"
                   placeholder="e.g. Stanford University"
                 />
               </div>
@@ -121,7 +121,7 @@ const InstitutionLogin = () => {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full bg-dark/50 border border-white/10 rounded-xl py-3.5 pl-11 pr-4 text-white placeholder-white/30 focus:outline-none focus:border-teal focus:ring-1 focus:ring-teal transition-all shadow-inner"
+                  className="w-full bg-black/30 border border-white/10 rounded-xl py-3.5 pl-11 pr-4 text-white placeholder-white/30 focus:outline-none focus:border-teal focus:ring-1 focus:ring-teal transition-all shadow-inner"
                   placeholder="••••••••"
                 />
               </div>
@@ -130,7 +130,7 @@ const InstitutionLogin = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-teal hover:bg-[#20b2aa] text-white font-bold py-4 px-4 rounded-xl shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)] transition-all flex items-center justify-center gap-2 mt-8 disabled:opacity-70 disabled:hover:shadow-[0_0_20px_rgba(45,212,191,0.3)]"
+              className="w-full bg-primary hover:bg-[#20b2aa] text-white font-bold py-4 px-4 rounded-xl shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)] transition-all flex items-center justify-center gap-2 mt-8 disabled:opacity-70 disabled:hover:shadow-[0_0_20px_rgba(45,212,191,0.3)]"
             >
               {isSubmitting ? (
                 <>Authenticating <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin ml-2"></div></>

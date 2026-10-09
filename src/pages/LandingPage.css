@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+.font-space {
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.font-inter {
+  font-family: 'Inter', sans-serif;
+}
+
+.landing-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+.mask-rays {
+  -webkit-mask-image: radial-gradient(circle, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 78%);
+  mask-image: radial-gradient(circle, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 78%);
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 120s linear infinite;
+}
+
+@keyframes drift-fog {
+  from { transform: translateX(-9%); }
+  to { transform: translateX(9%); }
+}
+
+.animate-fog-1 { animation: drift-fog 46s ease-in-out infinite alternate; }
+.animate-fog-2 { animation: drift-fog 70s ease-in-out infinite alternate-reverse; }
+.animate-fog-3 { animation: drift-fog 95s ease-in-out infinite alternate; }
+
+@keyframes fly-bird {
+  from { transform: translateX(-10vw); }
+  to { transform: translateX(110vw); }
+}
+@keyframes flap-bird {
+  0% { transform: scaleY(1); }
+  50% { transform: scaleY(0.3); }
+  100% { transform: scaleY(1); }
+}
+
+.bird-fly-1 { animation: fly-bird 34s linear infinite; animation-delay: -5s; }
+.bird-fly-2 { animation: fly-bird 39s linear infinite; animation-delay: -15s; }
+.bird-fly-3 { animation: fly-bird 42s linear infinite; animation-delay: -25s; }
+.bird-fly-4 { animation: fly-bird 46s linear infinite; animation-delay: -35s; }
+
+.bird-flap {
+  transform-origin: center;
+  animation: flap-bird 0.55s ease-in-out infinite;
+}
+
+@keyframes rise-speck {
+  0% { transform: translateY(110vh) translateX(0); opacity: 0; }
+  10% { opacity: 0.8; }
+  90% { opacity: 0.8; }
+  100% { transform: translateY(-10vh) translateX(20px); opacity: 0; }
+}
+
+.animate-speck {
+  animation: rise-speck var(--dur, 15s) linear infinite;
+  animation-delay: var(--del, -5s);
+}
+
+@keyframes slide-up {
+  to { transform: translateY(0); }
+}
+
+.letter-intro {
+  animation: slide-up 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  transform: translateY(112%);
+}
+
+@keyframes fade-in {
+  to { opacity: 1; }
+}
+
+.fade-in-asterisk {
+  opacity: 0;
+  animation: fade-in 1s forwards 1s;
+}
+
+.wordmark-text {
+  font-size: clamp(50px, 14vw, 250px);
+}
+
+.text-panel {
+  position: absolute;
+  right: 3vw;
+  top: 50%;
+  transform: translateY(-50%);
+  width: min(430px, 40vw);
+}
+
+@media (max-width: 819px) {
+  .wordmark-text {
+    font-size: 17vw;
+  }
+  .text-panel {
+    left: 6vw;
+    right: 6vw;
+    top: 50%;
+    transform: translateY(-50%);
+    width: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-spin-slow, .animate-fog-1, .animate-fog-2, .animate-fog-3, .bird-fly-1, .bird-fly-2, .bird-fly-3, .bird-fly-4, .bird-flap, .animate-speck, .letter-intro, .fade-in-asterisk {
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
