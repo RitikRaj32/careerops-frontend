@@ -109,7 +109,13 @@ const MockInterview = () => {
 
       const data = await res.json();
       if (res.ok && data.reply) {
-        setMessages(prev => [...prev, { role: 'ai', content: data.reply }]);
+        
+        let chatBubbleContent = data.reply;
+        if (data.feedback && data.sampleAnswer) {
+          chatBubbleContent = `💡 Feedback: ${data.feedback}\n\n✅ Ideal Answer: ${data.sampleAnswer}\n\n▶️ Next Question:\n${data.reply}`;
+        }
+        
+        setMessages(prev => [...prev, { role: 'ai', content: chatBubbleContent }]);
         speakText(data.reply);
         if (data.feedback) {
           setFeedbacks(prev => [{ 
