@@ -17,7 +17,7 @@ const SkillGaps = () => {
     const fetchRoadmap = async () => {
       setLoading(true);
       try {
-        const response = await fetch('http://localhost:5000/api/roadmap/analyze', {
+        const response = await fetch((import.meta.env.VITE_API_URL || "") + '/api/roadmap/analyze', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

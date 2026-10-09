@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }) => {
         try {
           const token = await getToken();
           console.log('Got Clerk token:', !!token);
-          const res = await fetch('http://localhost:5000/api/auth/sync', {
+          const res = await fetch((import.meta.env.VITE_API_URL || "") + '/api/auth/sync', {
             method: 'POST',
             headers: { 
               'Content-Type': 'application/json',
@@ -113,7 +113,7 @@ export const AuthProvider = ({ children }) => {
   const completeProfile = async (profileData) => {
     try {
       const token = await getToken();
-      await fetch('http://localhost:5000/api/users/profile', {
+      await fetch((import.meta.env.VITE_API_URL || "") + '/api/users/profile', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

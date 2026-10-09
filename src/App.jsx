@@ -122,7 +122,7 @@ const AppLayout = () => {
     if (!window.confirm("Are you sure you want to permanently delete your profile and all your data? This cannot be undone.")) return;
     
     try {
-      const response = await fetch('http://localhost:5000/api/users/profile', {
+      const response = await fetch((import.meta.env.VITE_API_URL || "") + '/api/users/profile', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone: user.phone, email: user.email })

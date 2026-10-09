@@ -45,7 +45,7 @@ const InterviewPrep = () => {
       const fetchGaps = async () => {
         setIsGeneratingGaps(true);
         try {
-          const res = await fetch('http://localhost:5000/api/roadmap/analyze', {
+          const res = await fetch((import.meta.env.VITE_API_URL || "") + '/api/roadmap/analyze', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
@@ -74,7 +74,7 @@ const InterviewPrep = () => {
       const fetchGapQuestions = async () => {
         setIsGeneratingGapQs(true);
         try {
-          const res = await fetch('http://localhost:5000/api/interview/gap', {
+          const res = await fetch((import.meta.env.VITE_API_URL || "") + '/api/interview/gap', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ gap: selectedGap, role: user?.targetRole || qbRole || 'Software Engineer' })
@@ -112,7 +112,7 @@ const InterviewPrep = () => {
      setIsAnalyzing(true);
      
      try {
-       const res = await fetch('http://localhost:5000/api/interview/chat', {
+       const res = await fetch((import.meta.env.VITE_API_URL || "") + '/api/interview/chat', {
          method: 'POST',
          headers: { 'Content-Type': 'application/json' },
          body: JSON.stringify({
@@ -184,7 +184,7 @@ const InterviewPrep = () => {
   const generateNewBankQuestions = async () => {
      setIsGeneratingQb(true);
      try {
-       const res = await fetch('http://localhost:5000/api/interview/prep', {
+       const res = await fetch((import.meta.env.VITE_API_URL || "") + '/api/interview/prep', {
          method: 'POST',
          headers: { 'Content-Type': 'application/json' },
          body: JSON.stringify({
@@ -248,7 +248,7 @@ const InterviewPrep = () => {
 
      setIsGeneratingResume(true);
      try {
-       const res = await fetch('http://localhost:5000/api/resume/questions', {
+       const res = await fetch((import.meta.env.VITE_API_URL || "") + '/api/resume/questions', {
          method: 'POST',
          headers: { 'Content-Type': 'application/json' },
          body: JSON.stringify({ resumeUrl: user.resumeUrl })

@@ -32,7 +32,7 @@
       const fetchGaps = async () => {
         setIsGeneratingGaps(true);
         try {
-          const res = await fetch('http://localhost:5000/api/roadmap/analyze', {
+          const res = await fetch((import.meta.env.VITE_API_URL || "") + '/api/roadmap/analyze', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
@@ -61,7 +61,7 @@
       const fetchGapQuestions = async () => {
         setIsGeneratingGapQs(true);
         try {
-          const res = await fetch('http://localhost:5000/api/interview/gap', {
+          const res = await fetch((import.meta.env.VITE_API_URL || "") + '/api/interview/gap', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ gap: selectedGap, role: user?.targetRole || qbRole || 'Software Engineer' })
